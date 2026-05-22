@@ -14,13 +14,16 @@ import {
   Fan,
   Lightbulb,
   Video,
-  Menu,
   X,
   Eye,
-  EyeOff
+  EyeOff,
+  Mail,
+  Send,
+  MessageSquare,
+  Menu
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const AuthModal = ({ isOpen, onClose, initialMode }) => {
   const [mode, setMode] = useState(initialMode);
@@ -156,11 +159,14 @@ const Navbar = ({ onOpenAuth }) => {
         </div>
         
         <div className="hidden md:flex space-x-8 items-center">
-          {['Home', 'Features', 'Devices', 'Dashboard', 'Contact'].map((item) => (
+          {['Home', 'Features', 'Devices', 'Dashboard'].map((item) => (
             <a key={item} href={`#${item.toLowerCase()}`} className="text-gray-300 hover:text-neon-blue hover:drop-shadow-[0_0_8px_rgba(0,243,255,0.8)] transition-all">
               {item}
             </a>
           ))}
+          <Link to="/contact" className="text-gray-300 hover:text-neon-blue hover:drop-shadow-[0_0_8px_rgba(0,243,255,0.8)] transition-all">
+            Contact
+          </Link>
         </div>
 
         <div className="hidden md:flex items-center gap-4">
@@ -178,11 +184,14 @@ const Navbar = ({ onOpenAuth }) => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full glass-panel py-4 flex flex-col items-center gap-4">
-          {['Home', 'Features', 'Devices', 'Dashboard', 'Contact'].map((item) => (
+          {['Home', 'Features', 'Devices', 'Dashboard'].map((item) => (
             <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMobileMenuOpen(false)} className="text-gray-300">
               {item}
             </a>
           ))}
+          <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="text-gray-300">
+            Contact
+          </Link>
         </div>
       )}
     </nav>
@@ -443,12 +452,13 @@ const Footer = () => {
             <li><a href="#features" className="hover:text-neon-blue transition">Features</a></li>
             <li><a href="#devices" className="hover:text-neon-blue transition">Devices</a></li>
             <li><a href="#dashboard" className="hover:text-neon-blue transition">Dashboard</a></li>
+            <li><Link to="/contact" className="hover:text-neon-blue transition">Contact</Link></li>
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold text-lg mb-4 text-white">Contact</h4>
+          <h4 className="font-semibold text-lg mb-4 text-white">Contact Us</h4>
           <ul className="space-y-2 text-gray-400">
-            <li>support@smarthome.manager</li>
+            <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-neon-blue" /> support@smarthome.manager</li>
             <li>1-800-SMART-HM</li>
             <li className="pt-4 flex gap-4">
               <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-neon-blue hover:text-black cursor-pointer transition">X</div>
@@ -464,6 +474,8 @@ const Footer = () => {
     </footer>
   );
 };
+
+const Contact = null;
 
 function LandingPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
