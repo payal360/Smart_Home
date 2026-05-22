@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const AuthModal = ({ isOpen, onClose, initialMode }) => {
@@ -134,73 +135,6 @@ const AuthModal = ({ isOpen, onClose, initialMode }) => {
         </div>
       )}
     </AnimatePresence>
-  );
-};
-
-const Navbar = ({ onOpenAuth }) => {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'glass-panel py-3' : 'bg-transparent py-5'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-[0_0_15px_rgba(0,243,255,0.5)]">
-            <Home className="text-white w-6 h-6" />
-          </div>
-          <span className="text-2xl font-bold tracking-tight">SmartHome<span className="text-neon-blue">_Manager</span></span>
-        </div>
-        
-        <div className="hidden md:flex space-x-8 items-center">
-          {['Home', 'Devices', 'Dashboard'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase()}`} className="text-gray-300 hover:text-neon-blue hover:drop-shadow-[0_0_8px_rgba(0,243,255,0.8)] transition-all">
-              {item}
-            </a>
-          ))}
-          <Link to="/features" className="text-gray-300 hover:text-neon-blue hover:drop-shadow-[0_0_8px_rgba(0,243,255,0.8)] transition-all">
-            Features
-          </Link>
-          <Link to="/contact" className="text-gray-300 hover:text-neon-blue hover:drop-shadow-[0_0_8px_rgba(0,243,255,0.8)] transition-all">
-            Contact
-          </Link>
-        </div>
-
-        <div className="hidden md:flex items-center gap-4">
-          <button onClick={() => onOpenAuth('register')} className="btn-primary py-2 px-5 text-sm">Register</button>
-        </div>
-
-        <div className="md:hidden">
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-white">
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-      </div>
-      
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full glass-panel py-4 flex flex-col items-center gap-4">
-          {['Home', 'Devices', 'Dashboard'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMobileMenuOpen(false)} className="text-gray-300">
-              {item}
-            </a>
-          ))}
-          <Link to="/features" onClick={() => setMobileMenuOpen(false)} className="text-gray-300">
-            Features
-          </Link>
-          <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="text-gray-300">
-            Contact
-          </Link>
-        </div>
-      )}
-    </nav>
   );
 };
 

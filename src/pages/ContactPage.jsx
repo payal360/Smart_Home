@@ -2,6 +2,8 @@ import React from 'react';
 import { Mail, MessageSquare, Send, Home, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const ContactPage = () => {
   return (
@@ -10,19 +12,7 @@ const ContactPage = () => {
       <div className="fixed top-0 left-1/4 w-96 h-96 bg-neon-blue/20 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-neon-purple/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-      <nav className="fixed w-full z-50 glass-panel py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Link to="/" className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-[0_0_15px_rgba(0,243,255,0.5)]">
-              <Home className="text-white w-6 h-6" />
-            </Link>
-            <span className="text-2xl font-bold tracking-tight">SmartHome<span className="text-neon-blue">_Manager</span></span>
-          </div>
-          <Link to="/" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to Home
-          </Link>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen flex items-center">
         <motion.div 
@@ -93,6 +83,7 @@ const ContactPage = () => {
           </div>
         </motion.div>
       </div>
+      <Footer />
     </div>
   );
 };
