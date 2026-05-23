@@ -4,8 +4,38 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import api from '../lib/api';
+import React, { useEffect, useState } from 'react';
 
 const FeaturesPage = () => {
+  const [testimonials, setTestimonials] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const t = await api.getTestimonials();
+        setTestimonials(t || []);
+      } catch (e) {
+        console.warn('failed to load testimonials', e);
+        setTestimonials([]);
+      }
+    })();
+  }, []);
+
+  const LiveTestimonials = () => {
+    if (!testimonials) return <div className="text-gray-400">Loading testimonials...</div>;
+    if (testimonials.length === 0) return <div className="text-gray-400 italic">No testimonials yet.</div>;
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {testimonials.slice(0,3).map((t, i) => (
+          <div key={i} className="glass-card p-4">
+            <p className="text-gray-300 mb-2">{t.quote || t.text}</p>
+            <div className="text-sm text-gray-400">— {t.name}</div>
+          </div>
+        ))}
+      </div>
+    );
+  };
   const features = [
     { 
       title: "Intelligent Device Control", 
@@ -45,8 +75,8 @@ const FeaturesPage = () => {
   return (
     <div className="min-h-screen text-white overflow-x-hidden selection:bg-neon-blue/30 relative bg-[#0f172a]">
       {/* Background gradients */}
-      <div className="fixed top-0 left-1/4 w-96 h-96 bg-neon-blue/20 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-neon-purple/20 rounded-full blur-[120px] pointer-events-none"></div>
+  <div className="fixed top-0 left-1/2 -translate-x-1/2 w-72 h-72 md:w-96 md:h-96 bg-neon-blue/20 rounded-full blur-[120px] pointer-events-none"></div>
+  <div className="fixed bottom-0 right-1/2 translate-x-1/2 w-72 h-72 md:w-96 md:h-96 bg-neon-purple/20 rounded-full blur-[120px] pointer-events-none"></div>
 
       <Navbar />
 
@@ -98,7 +128,7 @@ const FeaturesPage = () => {
           ))}
         </div>
 
-        {/* Integration Ecosystem */}
+  {/* Integration Ecosystem */}
         <div className="py-20 border-t border-glass-border">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Seamless <span className="neon-text-purple">Integrations</span></h2>
@@ -117,6 +147,12 @@ const FeaturesPage = () => {
                 {brand}
               </motion.div>
             ))}
+          </div>
+
+          {/* Optional live testimonials */}
+          <div className="mt-10">
+            <h3 className="text-2xl font-bold mb-4">What users say</h3>
+            <LiveTestimonials />
           </div>
         </div>
 

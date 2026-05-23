@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Home, 
@@ -23,6 +23,48 @@ import {
   Sun
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import api from '../lib/api';
+
+const DashboardStats = () => {
+  const [stats, setStats] = React.useState(null);
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const s = await api.getStats();
+        setStats(s);
+      } catch (e) {
+        console.warn('failed to load stats', e);
+      }
+    })();
+  }, []);
+
+  if (!stats) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass-card p-6">Loading...</div>
+        <div className="glass-card p-6">Loading...</div>
+        <div className="glass-card p-6">Loading...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {stats.slice(0,3).map((stat, i) => (
+        <motion.div key={i} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="glass-card flex items-center justify-between p-6">
+          <div>
+            <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
+            <h3 className="text-3xl font-bold">{stat.value}</h3>
+          </div>
+          <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-white">
+            <Power className="w-6 h-6" />
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -132,8 +174,8 @@ const Dashboard = () => {
               <Bell className="w-5 h-5 text-gray-400" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-neon-blue rounded-full shadow-[0_0_5px_#00f3ff]"></span>
             </div>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 border-2 border-white/10 overflow-hidden">
-              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.name}`} alt="Profile" />
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 border-2 border-white/10 overflow-hidden">
+              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.name}`} alt="Profile" className="w-full h-full object-cover" />
             </div>
           </div>
         </header>
@@ -142,37 +184,7 @@ const Dashboard = () => {
         {activeTab === 'home' && (
           <div className="p-8 max-w-7xl mx-auto space-y-8">
             {/* Top Widgets */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="glass-card flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">Indoor Temp</p>
-                  <h3 className="text-3xl font-bold">22.5°<span className="text-neon-blue">C</span></h3>
-                </div>
-                <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400">
-                  <Thermometer className="w-6 h-6" />
-                </div>
-              </motion.div>
-              
-              <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="glass-card flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">Energy Today</p>
-                  <h3 className="text-3xl font-bold">14.2 <span className="text-neon-purple text-lg">kWh</span></h3>
-                </div>
-                <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
-                  <Zap className="w-6 h-6" />
-                </div>
-              </motion.div>
-              
-              <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="glass-card flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">Active Devices</p>
-                  <h3 className="text-3xl font-bold">04</h3>
-                </div>
-                <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
-                  <Power className="w-6 h-6" />
-                </div>
-              </motion.div>
-            </div>
+            <DashboardStats />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Camera Feed */}

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Activity,
@@ -34,6 +35,7 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import api from '../lib/api';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 34 },
@@ -193,6 +195,54 @@ const SectionHeader = ({ eyebrow, title, highlight, children }) => (
     {children && <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">{children}</p>}
   </Reveal>
 );
+
+const SectionStats = () => {
+  const [statsData, setStatsData] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const s = await api.getStats();
+        setStatsData(s);
+      } catch (e) {
+        console.warn('failed to load stats', e);
+        setStatsData([]);
+      }
+    })();
+  }, []);
+
+  if (!statsData) {
+    return (
+      <motion.div className="mt-10 grid gap-4 border-t border-white/10 pt-8 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="group rounded-2xl border border-white/10 bg-black/20 p-5 text-center">Loading...</div>
+        ))}
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="mt-10 grid gap-4 border-t border-white/10 pt-8 sm:grid-cols-2 lg:grid-cols-4"
+    >
+      {statsData.map((stat) => (
+        <motion.div
+          variants={fadeUp}
+          whileHover={{ y: -7, scale: 1.03 }}
+          key={stat.label}
+          className="group rounded-2xl border border-white/10 bg-black/20 p-5 text-center transition-all duration-300 hover:border-neon-blue/60 hover:shadow-[0_0_30px_rgba(0,243,255,0.22)]"
+        >
+          <div className="mb-2 text-3xl font-black text-white drop-shadow-[0_0_14px_rgba(0,243,255,0.5)] sm:text-4xl">{stat.value}</div>
+          <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 transition-colors group-hover:text-cyan-100">{stat.label}</div>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+};
 
 const GlowButton = ({ children, to, variant = 'primary' }) => {
   const shared =
@@ -380,29 +430,7 @@ const AboutPage = () => {
                     </p>
                   </div>
 
-                  <motion.div
-                    variants={stagger}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    className="mt-10 grid gap-4 border-t border-white/10 pt-8 sm:grid-cols-2 lg:grid-cols-4"
-                  >
-                    {stats.map((stat) => (
-                      <motion.div
-                        variants={fadeUp}
-                        whileHover={{ y: -7, scale: 1.03 }}
-                        key={stat.label}
-                        className="group rounded-2xl border border-white/10 bg-black/20 p-5 text-center transition-all duration-300 hover:border-neon-blue/60 hover:shadow-[0_0_30px_rgba(0,243,255,0.22)]"
-                      >
-                        <div className="mb-2 text-3xl font-black text-white drop-shadow-[0_0_14px_rgba(0,243,255,0.5)] sm:text-4xl">
-                          {stat.value}
-                        </div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 transition-colors group-hover:text-cyan-100">
-                          {stat.label}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
+                  <SectionStats />
                 </div>
               </article>
             </Reveal>

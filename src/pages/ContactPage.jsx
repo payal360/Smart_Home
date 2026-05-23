@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import api from '../lib/api';
+import { useState } from 'react';
 
 const ContactPage = () => {
   return (
     <div className="min-h-screen text-white overflow-x-hidden selection:bg-neon-blue/30 relative bg-[#0f172a]">
       {/* Background gradients */}
-      <div className="fixed top-0 left-1/4 w-96 h-96 bg-neon-blue/20 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-neon-purple/20 rounded-full blur-[120px] pointer-events-none"></div>
+  <div className="fixed top-0 left-1/2 -translate-x-1/2 w-72 h-72 md:w-96 md:h-96 bg-neon-blue/20 rounded-full blur-[120px] pointer-events-none"></div>
+  <div className="fixed bottom-0 right-1/2 translate-x-1/2 w-72 h-72 md:w-96 md:h-96 bg-neon-purple/20 rounded-full blur-[120px] pointer-events-none"></div>
 
       <Navbar />
 
@@ -53,7 +55,22 @@ const ContactPage = () => {
             </div>
             
             <div className="flex-1">
-              <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); e.target.reset(); alert('Message sent successfully!'); }}>
+              <form className="space-y-5" onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const firstName = form.querySelector('input[placeholder="John"]').value;
+                const lastName = form.querySelector('input[placeholder="Doe"]').value;
+                const email = form.querySelector('input[type="email"]').value;
+                const message = form.querySelector('textarea').value;
+                try {
+                  await api.contact({ firstName, lastName, email, message });
+                  form.reset();
+                  alert('Message sent successfully!');
+                } catch (err) {
+                  console.error('contact failed', err);
+                  alert('Failed to send message');
+                }
+              }}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">First Name</label>

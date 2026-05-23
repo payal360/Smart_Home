@@ -26,6 +26,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import api from '../lib/api';
+import { useState, useEffect } from 'react';
 
 const AuthModal = ({ isOpen, onClose, initialMode }) => {
   const [mode, setMode] = useState(initialMode);
@@ -63,7 +65,21 @@ const AuthModal = ({ isOpen, onClose, initialMode }) => {
               <p className="text-gray-400 text-sm">{mode === 'login' ? 'Enter your credentials to access your dashboard.' : 'Sign up to start managing your smart home.'}</p>
             </div>
             
-            <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); onClose(); navigate('/dashboard'); }}>
+            <form className="space-y-5" onSubmit={async (e) => { 
+                e.preventDefault();
+                const form = e.currentTarget;
+                const email = form.querySelector('input[type="email"]').value;
+                const password = form.querySelector('input[type="password"]').value;
+                try {
+                  const res = await api.register({ email, password });
+                  // simple success flow: close and go to dashboard
+                  onClose();
+                  navigate('/dashboard');
+                } catch (err) {
+                  console.error('register failed', err);
+                  alert('Register failed: ' + (err.message || 'unknown'));
+                }
+              }}>
               {mode === 'register' && (
                 <div>
                   <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Full Name</label>
@@ -303,33 +319,53 @@ const Devices = () => {
   );
 };
 
-const Testimonials = () => {
-  const reviews = [
-    { text: "Amazing smart home simulation. The dashboard is incredibly intuitive and the neon aesthetics are perfectly balanced.", author: "Sarah Jenkins" },
-    { text: "Easy to manage devices. Grouping my living room lights and AC into one routine saved me so much time.", author: "David Chen" },
-    { text: "Beautiful dashboard experience. The glassmorphism UI feels extremely premium and modern.", author: "Elena Rodriguez" }
-  ];
+const Testimonials = ({ initial = [] }) => {
+  const [reviews, setReviews] = useState(initial.length ? initial : null);
+
+  useEffect(() => {
+    if (reviews) return;
+    (async () => {
+      try {
+        const t = await api.getTestimonials();
+        if (Array.isArray(t)) setReviews(t.map((x) => ({ text: x.quote || x.text || x.q, author: x.name || x.author }))); 
+      } catch (e) {
+        console.warn('failed to load testimonials', e);
+        setReviews([]);
+      }
+    })();
+  }, []);
+
+  if (!reviews) return (
+    <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
+      <h2 className="text-4xl font-bold text-center mb-16">User <span className="neon-text-blue">Stories</span></h2>
+      <div className="text-center text-gray-400">Loading testimonials...</div>
+    </section>
+  );
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
       <h2 className="text-4xl font-bold text-center mb-16">User <span className="neon-text-blue">Stories</span></h2>
       <div className="flex flex-col md:flex-row gap-6">
-        {reviews.map((r, i) => (
-          <motion.div 
-            key={i}
-            whileHover={{ y: -10 }}
-            className="flex-1 glass-card bg-gradient-to-b from-white/5 to-transparent relative p-8"
-          >
-            <div className="text-neon-purple text-4xl font-serif absolute top-4 left-4 opacity-20">"</div>
-            <p className="text-gray-300 mb-6 relative z-10 italic">"{r.text}"</p>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                <Users className="w-5 h-5 text-gray-400" />
+        {reviews.length === 0 ? (
+          <div className="text-gray-400 italic">No testimonials available.</div>
+        ) : (
+          reviews.map((r, i) => (
+            <motion.div 
+              key={i}
+              whileHover={{ y: -10 }}
+              className="flex-1 glass-card bg-gradient-to-b from-white/5 to-transparent relative p-8"
+            >
+              <div className="text-neon-purple text-4xl font-serif absolute top-4 left-4 opacity-20">"</div>
+              <p className="text-gray-300 mb-6 relative z-10 italic">"{r.text}"</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-gray-400" />
+                </div>
+                <span className="font-semibold text-sm">{r.author}</span>
               </div>
-              <span className="font-semibold text-sm">{r.author}</span>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))
+        )}
       </div>
     </section>
   );
@@ -337,17 +373,35 @@ const Testimonials = () => {
 
 const Contact = null;
 
-const StatsBanner = () => {
+const StatsBanner = ({ initial = [] }) => {
+  const [stats, setStats] = useState(initial.length ? initial : null);
+
+  useEffect(() => {
+    if (stats) return;
+    (async () => {
+      try {
+        const s = await api.getStats();
+        setStats(s || []);
+      } catch (e) {
+        console.warn('failed to load stats', e);
+        setStats([]);
+      }
+    })();
+  }, []);
+
+  if (!stats) return (
+    <div className="border-y border-white/5 bg-black/40 backdrop-blur-md py-12 relative z-10 mt-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center text-gray-400">Loading stats...</div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="border-y border-white/5 bg-black/40 backdrop-blur-md py-12 relative z-10 mt-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/5">
-          {[
-            { label: 'Active Devices', value: '1.2M+' },
-            { label: 'Daily Routines', value: '5M+' },
-            { label: 'Uptime', value: '99.99%' },
-            { label: 'Energy Saved', value: '30%' }
-          ].map((stat, i) => (
+          {stats.map((stat, i) => (
             <div key={i} className="flex flex-col items-center justify-center px-4">
               <div className="text-3xl md:text-5xl font-bold text-white mb-2 tracking-tight drop-shadow-[0_0_8px_rgba(0,243,255,0.5)]">{stat.value}</div>
               <div className="text-xs md:text-sm text-gray-400 uppercase tracking-widest font-semibold">{stat.label}</div>
@@ -363,8 +417,8 @@ const AppDownloadCTA = () => {
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
       <div className="glass-panel rounded-3xl p-8 md:p-16 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between border-neon-blue/30 shadow-[0_0_50px_rgba(0,243,255,0.15)]">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-neon-blue/20 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-neon-purple/20 rounded-full blur-[100px] pointer-events-none"></div>
+  <div className="absolute top-0 right-0 w-56 h-56 md:w-96 md:h-96 bg-neon-blue/20 rounded-full blur-[100px] pointer-events-none"></div>
+  <div className="absolute bottom-0 left-0 w-56 h-56 md:w-96 md:h-96 bg-neon-purple/20 rounded-full blur-[100px] pointer-events-none"></div>
         
         <div className="max-w-xl z-10 text-center lg:text-left mb-16 lg:mb-0">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">Control your home from <span className="neon-text-blue">anywhere.</span></h2>
