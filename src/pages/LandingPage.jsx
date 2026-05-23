@@ -14,13 +14,18 @@ import {
   Fan,
   Lightbulb,
   Video,
-  Menu,
   X,
   Eye,
-  EyeOff
+  EyeOff,
+  Mail,
+  Send,
+  MessageSquare,
+  Menu
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const AuthModal = ({ isOpen, onClose, initialMode }) => {
   const [mode, setMode] = useState(initialMode);
@@ -133,62 +138,6 @@ const AuthModal = ({ isOpen, onClose, initialMode }) => {
   );
 };
 
-const Navbar = ({ onOpenAuth }) => {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'glass-panel py-3' : 'bg-transparent py-5'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-[0_0_15px_rgba(0,243,255,0.5)]">
-            <Home className="text-white w-6 h-6" />
-          </div>
-          <span className="text-2xl font-bold tracking-tight">SmartHome<span className="text-neon-blue">_Manager</span></span>
-        </div>
-        
-        <div className="hidden md:flex space-x-8 items-center">
-          {['Home', 'Features', 'Devices', 'Dashboard', 'Contact'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase()}`} className="text-gray-300 hover:text-neon-blue hover:drop-shadow-[0_0_8px_rgba(0,243,255,0.8)] transition-all">
-              {item}
-            </a>
-          ))}
-        </div>
-
-        <div className="hidden md:flex items-center gap-4">
-          <button onClick={() => onOpenAuth('login')} className="text-white hover:text-neon-blue transition-colors">Login</button>
-          <button onClick={() => onOpenAuth('register')} className="btn-primary py-2 px-5 text-sm">Register</button>
-        </div>
-
-        <div className="md:hidden">
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-white">
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-      </div>
-      
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full glass-panel py-4 flex flex-col items-center gap-4">
-          {['Home', 'Features', 'Devices', 'Dashboard', 'Contact'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMobileMenuOpen(false)} className="text-gray-300">
-              {item}
-            </a>
-          ))}
-        </div>
-      )}
-    </nav>
-  );
-};
-
 const Hero = ({ onOpenAuth }) => {
   return (
     <section id="home" className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 min-h-screen">
@@ -218,7 +167,7 @@ const Hero = ({ onOpenAuth }) => {
           className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
         >
           <button onClick={() => onOpenAuth('register')} className="btn-primary text-center inline-block cursor-pointer">Get Started</button>
-          <a href="#features" className="btn-outline text-center inline-block">Explore Features</a>
+          <Link to="/features" className="btn-outline text-center inline-block">Explore Features</Link>
         </motion.div>
       </div>
       <div className="flex-1 relative z-10 w-full max-w-lg lg:max-w-none">
@@ -236,43 +185,7 @@ const Hero = ({ onOpenAuth }) => {
   );
 };
 
-const Features = () => {
-  const features = [
-    { icon: <Settings className="w-8 h-8 text-blue-400" />, title: "Smart Device Control", desc: "Seamlessly control all your IoT devices from a single interface." },
-    { icon: <Activity className="w-8 h-8 text-green-400" />, title: "Voice Command Simulation", desc: "Test and setup voice commands for true hands-free control." },
-    { icon: <Zap className="w-8 h-8 text-yellow-400" />, title: "Energy Monitoring", desc: "Track power consumption and reduce your carbon footprint." },
-    { icon: <ShieldAlert className="w-8 h-8 text-red-400" />, title: "Emergency Mode", desc: "Instant lockdown and notification protocols for your safety." },
-    { icon: <Clock className="w-8 h-8 text-purple-400" />, title: "Routine Scheduling", desc: "Automate daily tasks with intelligent time-based routines." },
-    { icon: <Layers className="w-8 h-8 text-cyan-400" />, title: "Device Group Management", desc: "Group devices by room or function for batch operations." },
-  ];
-
-  return (
-    <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
-      <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold mb-4">Intelligent <span className="neon-text-blue">Features</span></h2>
-        <p className="text-gray-400 max-w-2xl mx-auto">Everything you need to orchestrate the perfect living environment.</p>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {features.map((f, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className="glass-card flex flex-col items-start group"
-          >
-            <div className="p-3 rounded-xl bg-white/5 mb-4 group-hover:scale-110 transition-transform">
-              {f.icon}
-            </div>
-            <h3 className="text-xl font-semibold mb-2">{f.title}</h3>
-            <p className="text-gray-400">{f.desc}</p>
-          </motion.div>
-        ))}
-      </div>
-    </section>
-  );
-};
+const Features = null;
 
 const DashboardPreview = () => {
   return (
@@ -422,46 +335,77 @@ const Testimonials = () => {
   );
 };
 
-const Footer = () => {
+const Contact = null;
+
+const StatsBanner = () => {
   return (
-    <footer className="border-t border-glass-border bg-black/20 pt-16 pb-8 px-4 sm:px-6 lg:px-8 mt-20 relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-50"></div>
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-        <div className="col-span-1 md:col-span-2">
-          <div className="flex items-center gap-2 mb-4">
-            <Home className="text-neon-blue w-6 h-6 drop-shadow-[0_0_8px_rgba(0,243,255,0.8)]" />
-            <span className="text-2xl font-bold">SmartHome<span className="text-neon-blue">_Manager</span></span>
+    <div className="border-y border-white/5 bg-black/40 backdrop-blur-md py-12 relative z-10 mt-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/5">
+          {[
+            { label: 'Active Devices', value: '1.2M+' },
+            { label: 'Daily Routines', value: '5M+' },
+            { label: 'Uptime', value: '99.99%' },
+            { label: 'Energy Saved', value: '30%' }
+          ].map((stat, i) => (
+            <div key={i} className="flex flex-col items-center justify-center px-4">
+              <div className="text-3xl md:text-5xl font-bold text-white mb-2 tracking-tight drop-shadow-[0_0_8px_rgba(0,243,255,0.5)]">{stat.value}</div>
+              <div className="text-xs md:text-sm text-gray-400 uppercase tracking-widest font-semibold">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AppDownloadCTA = () => {
+  return (
+    <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
+      <div className="glass-panel rounded-3xl p-8 md:p-16 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between border-neon-blue/30 shadow-[0_0_50px_rgba(0,243,255,0.15)]">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-neon-blue/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-neon-purple/20 rounded-full blur-[100px] pointer-events-none"></div>
+        
+        <div className="max-w-xl z-10 text-center lg:text-left mb-16 lg:mb-0">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">Control your home from <span className="neon-text-blue">anywhere.</span></h2>
+          <p className="text-gray-300 text-lg mb-10 leading-relaxed">Download the SmartHome_Manager mobile app for iOS and Android. Experience ultimate convenience on the go with zero compromise.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <button className="flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-xl font-bold hover:bg-gray-200 transition-colors shadow-lg">
+              <svg viewBox="0 0 24 24" className="w-7 h-7 fill-current"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.26-.85 3.65-.79 1.48.06 2.68.68 3.42 1.83-2.92 1.76-2.43 5.48.36 6.74-.63 1.63-1.57 3.33-2.51 4.39zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+              App Store
+            </button>
+            <button className="flex items-center justify-center gap-3 bg-black/40 border border-white/20 text-white px-8 py-4 rounded-xl font-bold hover:bg-black/60 transition-colors shadow-lg">
+              <svg viewBox="0 0 24 24" className="w-7 h-7 fill-current text-green-400"><path d="M3.6 20.9l12.4-7.1-4.2-4.2-8.2 11.3zM2.5 3.4l13.5 7.8-3.1 3.1L2.5 3.4zm14.3 8.3l3.6 2.1c.9.5.9 1.4 0 1.9l-3.6 2.1-2.4-2.4 2.4-3.7z"/></svg>
+              Google Play
+            </button>
           </div>
-          <p className="text-gray-400 max-w-md">
-            Elevating your living experience through intelligent automation and breathtaking design.
-          </p>
         </div>
-        <div>
-          <h4 className="font-semibold text-lg mb-4 text-white">Quick Links</h4>
-          <ul className="space-y-2 text-gray-400">
-            <li><a href="#home" className="hover:text-neon-blue transition">Home</a></li>
-            <li><a href="#features" className="hover:text-neon-blue transition">Features</a></li>
-            <li><a href="#devices" className="hover:text-neon-blue transition">Devices</a></li>
-            <li><a href="#dashboard" className="hover:text-neon-blue transition">Dashboard</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="font-semibold text-lg mb-4 text-white">Contact</h4>
-          <ul className="space-y-2 text-gray-400">
-            <li>support@smarthome.manager</li>
-            <li>1-800-SMART-HM</li>
-            <li className="pt-4 flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-neon-blue hover:text-black cursor-pointer transition">X</div>
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-neon-blue hover:text-black cursor-pointer transition">in</div>
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-neon-blue hover:text-black cursor-pointer transition">fb</div>
-            </li>
-          </ul>
+        
+        <div className="relative z-10 w-full max-w-sm lg:w-1/3 flex justify-center lg:justify-end">
+          <div className="relative border-gray-800 bg-gray-900 border-[8px] rounded-[2.5rem] h-[450px] w-[220px] shadow-2xl overflow-hidden">
+            <div className="w-[120px] h-[20px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute z-20"></div>
+            <div className="absolute inset-0 bg-[#0f172a] p-5 flex flex-col pt-10">
+              <div className="flex justify-between items-center mb-8">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neon-blue to-neon-purple shadow-[0_0_10px_rgba(0,243,255,0.5)]"></div>
+                <div className="text-sm font-bold text-white">24°C</div>
+              </div>
+              <div className="space-y-4 flex-1">
+                <div className="h-28 rounded-2xl bg-white/10 border border-white/10 flex flex-col p-4 justify-between relative overflow-hidden">
+                   <div className="absolute inset-0 bg-neon-blue/10"></div>
+                   <div className="w-8 h-8 rounded-full bg-neon-blue/20 flex items-center justify-center relative z-10"><div className="w-2.5 h-2.5 rounded-full bg-neon-blue drop-shadow-[0_0_5px_rgba(0,243,255,1)]"></div></div>
+                   <div className="text-base font-semibold text-white relative z-10">Living Room</div>
+                </div>
+                <div className="h-28 rounded-2xl bg-white/5 border border-white/5 flex flex-col p-4 justify-between">
+                   <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><div className="w-2.5 h-2.5 rounded-full bg-gray-500"></div></div>
+                   <div className="text-base font-semibold text-gray-400">Bedroom</div>
+                </div>
+              </div>
+              <div className="mt-4 h-12 bg-neon-blue rounded-xl flex items-center justify-center text-sm font-bold text-black shadow-[0_0_15px_rgba(0,243,255,0.4)]">Master Switch</div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto text-center text-gray-500 text-sm border-t border-glass-border/50 pt-8">
-        &copy; {new Date().getFullYear()} SmartHome_Manager. All rights reserved.
-      </div>
-    </footer>
+    </section>
   );
 };
 
@@ -478,11 +422,12 @@ function LandingPage() {
     <div className="min-h-screen text-white overflow-x-hidden selection:bg-neon-blue/30 relative">
       <Navbar onOpenAuth={openAuth} />
       <Hero onOpenAuth={openAuth} />
-      <Features />
+      <StatsBanner />
       <HowItWorks />
       <DashboardPreview />
       <Devices />
       <Testimonials />
+      <AppDownloadCTA />
       <Footer />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} initialMode={authMode} />
     </div>
