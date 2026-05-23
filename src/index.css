@@ -67,3 +67,21 @@
 .animate-pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
 }
+
+@keyframes about-particle-drift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(0.7);
+    opacity: 0.2;
+  }
+  35% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(24px, -34px, 0) scale(1.2);
+    opacity: 1;
+  }
+}
+
+.about-particle {
+  animation: about-particle-drift 9s ease-in-out infinite;
+}
