@@ -7,18 +7,15 @@ import {
   LogOut, 
   Bell, 
   Search,
-  Thermometer,
   Zap,
   Power,
   Lightbulb,
   Fan,
   Video,
   Wind,
-  Clock,
   Shield,
   User,
   Wifi,
-  Smartphone,
   Moon,
   Sun
 } from 'lucide-react';
@@ -26,9 +23,9 @@ import { motion } from 'framer-motion';
 import api from '../lib/api';
 
 const DashboardStats = () => {
-  const [stats, setStats] = React.useState(null);
+  const [stats, setStats] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       try {
         const s = await api.getStats();

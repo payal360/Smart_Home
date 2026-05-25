@@ -1,14 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
-  Home, 
-  Settings, 
-  Zap, 
-  ShieldAlert, 
-  Clock, 
-  Layers, 
-  Power, 
-  Thermometer, 
-  Activity,
   Users,
   Tv,
   Fan,
@@ -16,27 +7,25 @@ import {
   Video,
   X,
   Eye,
-  EyeOff,
-  Mail,
-  Send,
-  MessageSquare,
-  Menu
+  EyeOff
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import api from '../lib/api';
-import { useState, useEffect } from 'react';
 
 const AuthModal = ({ isOpen, onClose, initialMode }) => {
   const [mode, setMode] = useState(initialMode);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   
+  // initialize from props when modal opens; keep local state in sync via effect only when initialMode changes
   useEffect(() => {
-    setMode(initialMode);
-    setShowPassword(false);
+    if (isOpen) {
+      setMode(initialMode);
+      setShowPassword(false);
+    }
   }, [initialMode, isOpen]);
 
   return (

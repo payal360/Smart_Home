@@ -1,7 +1,6 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import React, { useEffect, useState } from 'react';
 import api from '../lib/api';
 
 const BillingPage = () => {

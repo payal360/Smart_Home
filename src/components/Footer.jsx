@@ -1,4 +1,3 @@
-import React from 'react';
 import { Home, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

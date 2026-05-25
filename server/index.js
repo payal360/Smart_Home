@@ -1,3 +1,4 @@
+/* global process */
 import express from 'express';
 import cors from 'cors';
 
@@ -67,7 +68,7 @@ app.get('/api/billing', (req, res) => {
 
 // Simple register/auth stub
 app.post('/api/register', (req, res) => {
-  const { email, password } = req.body || {};
+  const { email } = req.body || {};
   if (!email) return res.status(400).json({ error: 'email required' });
   // In a real app we'd validate + store user; here we return a fake success
   return res.json({ success: true, user: { email, id: Date.now() } });

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Activity,
@@ -65,12 +65,7 @@ const deviceIcons = [
   { Icon: BatteryCharging, label: 'Energy', className: 'right-[28%] bottom-[10%]', delay: 2.1 },
 ];
 
-const stats = [
-  { value: '1.2M+', label: 'Simulated Device Actions' },
-  { value: '150+', label: 'Automation Rules' },
-  { value: '99.9%', label: 'Dashboard Reliability' },
-  { value: '24/7', label: 'Smart Monitoring' },
-];
+// stats are loaded from the API via SectionStats
 
 const coreFeatures = [
   {

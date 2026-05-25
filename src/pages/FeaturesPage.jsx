@@ -1,11 +1,26 @@
-import React from 'react';
-import { Home, ArrowLeft, ShieldCheck, Zap, Server, Settings, ArrowRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import api from '../lib/api';
-import React, { useEffect, useState } from 'react';
+
+// Move component outside render to avoid recreating components during render
+const LiveTestimonials = ({ testimonials }) => {
+  if (!testimonials) return <div className="text-gray-400">Loading testimonials...</div>;
+  if (testimonials.length === 0) return <div className="text-gray-400 italic">No testimonials yet.</div>;
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {testimonials.slice(0,3).map((t, i) => (
+        <div key={i} className="glass-card p-4">
+          <p className="text-gray-300 mb-2">{t.quote || t.text}</p>
+          <div className="text-sm text-gray-400">— {t.name}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const FeaturesPage = () => {
   const [testimonials, setTestimonials] = useState(null);
@@ -21,21 +36,6 @@ const FeaturesPage = () => {
       }
     })();
   }, []);
-
-  const LiveTestimonials = () => {
-    if (!testimonials) return <div className="text-gray-400">Loading testimonials...</div>;
-    if (testimonials.length === 0) return <div className="text-gray-400 italic">No testimonials yet.</div>;
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {testimonials.slice(0,3).map((t, i) => (
-          <div key={i} className="glass-card p-4">
-            <p className="text-gray-300 mb-2">{t.quote || t.text}</p>
-            <div className="text-sm text-gray-400">— {t.name}</div>
-          </div>
-        ))}
-      </div>
-    );
-  };
   const features = [
     { 
       title: "Intelligent Device Control", 
@@ -152,7 +152,7 @@ const FeaturesPage = () => {
           {/* Optional live testimonials */}
           <div className="mt-10">
             <h3 className="text-2xl font-bold mb-4">What users say</h3>
-            <LiveTestimonials />
+            <LiveTestimonials testimonials={testimonials} />
           </div>
         </div>
 

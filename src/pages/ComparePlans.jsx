@@ -1,12 +1,9 @@
-import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Check } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import api from '../lib/api';
-
+z
 const ComparePlans = () => {
-  const [plans, setPlans] = useState(null);
+  // plans are available via static rows for now; API fetch removed to avoid unused state
   const rows = [
     ['Feature', 'Starter', 'Pro', 'Enterprise'],
     ['Devices', 'Up to 5', 'Unlimited', 'Unlimited'],
@@ -17,16 +14,7 @@ const ComparePlans = () => {
     ['Support', 'Community', 'Priority 24/7', 'Dedicated']
   ];
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const p = await api.getPlans();
-        setPlans(p);
-      } catch (e) {
-        console.warn('failed to load plans', e);
-      }
-    })();
-  }, []);
+  // keep API available in lib/api for other pages
 
   return (
     <div className="min-h-screen text-white bg-[#0f172a] selection:bg-neon-blue/30 relative">
