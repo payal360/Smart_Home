@@ -1,7 +1,7 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Check } from 'lucide-react';
-z
+
 const ComparePlans = () => {
   // plans are available via static rows for now; API fetch removed to avoid unused state
   const rows = [

@@ -9,6 +9,7 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
+import { Thermometer, Power, Activity, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
